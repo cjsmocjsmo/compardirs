@@ -31,8 +31,8 @@ fn are_folders_equal(folder1: &Path, folder2: &Path) -> Result<bool, Vec<String>
 }
 
 fn main() {
-    let folder2 = Path::new("/media/pinas/foo1/Music/Music/A");
-    let folder1 = Path::new("/media/pinas/foo1/NewMusic/A");
+    let folder2 = Path::new("/media/pinas/foo1/Music/Music/J");
+    let folder1 = Path::new("/media/pinas/foo1/NewMusic/J");
 
     match are_folders_equal(folder1, folder2) {
         Ok(true) => println!("The folders are identical."),
