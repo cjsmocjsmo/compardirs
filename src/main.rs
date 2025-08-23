@@ -7,6 +7,7 @@ fn collect_jpgs(dir: &Path) -> Vec<PathBuf> {
     if let Ok(entries) = fs::read_dir(dir) {
         for entry in entries.flatten() {
             let path = entry.path();
+            println!("Processing: {}", path.display());
             if path.is_dir() {
                 jpgs.extend(collect_jpgs(&path));
             } else if let Some(ext) = path.extension() {
