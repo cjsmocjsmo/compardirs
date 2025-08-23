@@ -1,47 +1,48 @@
+use std::collections::HashSet;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-fn are_folders_equal(folder1: &Path, folder2: &Path) -> Result<bool, Vec<String>> {
-    let mut differences = Vec::new();
-
-    // Compare the contents of the folders
-    for entry in fs::read_dir(folder1).expect("read_dir call failed") {
-        let entry = entry.expect("read_dir entry failed");
-        let path1 = entry.path();
-        let path2 = folder2.join(entry.file_name());
-
-        if path2.exists() {
-            if fs::metadata(&path1).expect("metadata call failed").is_dir() {
-                if !are_folders_equal(&path1, &path2)? {
-                    differences.push(format!("Directory {} is different", path1.display()));
+fn collect_jpgs(dir: &Path) -> Vec<PathBuf> {
+    let mut jpgs = Vec::new();
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                jpgs.extend(collect_jpgs(&path));
+            } else if let Some(ext) = path.extension() {
+                if ext.eq_ignore_ascii_case("jpg") {
+                    jpgs.push(path);
                 }
-            } else if fs::read(&path1).expect("read call failed") != fs::read(&path2).expect("read call failed") {
-                differences.push(format!("File {} is different", path1.display()));
             }
-        } else {
-            differences.push(format!("File {} is missing in {}", path1.display(), folder2.display()));
         }
     }
-
-    if differences.is_empty() {
-        Ok(true)
-    } else {
-        Err(differences)
-    }
+    jpgs
 }
 
 fn main() {
-    let folder2 = Path::new("/media/pinas/foo1/Music/Music");
-    let folder1 = Path::new("/media/pinas/foo1/NewMusic");
+    let dira = Path::new("/home/whitepi/Pictures/Clean"); // <-- set your path
+    let dirb = Path::new("/home/whitepi/Pictures/test2"); // <-- set your path
 
-    match are_folders_equal(folder1, folder2) {
-        Ok(true) => println!("The folders are identical."),
-        Ok(false) => println!("The folders are different."),
-        Err(differences) => {
-            println!("The folders are different.\n Differences:");
-            for difference in differences {
-                println!("{}", difference);
+    let jpgs_a = collect_jpgs(dira);
+    let jpgs_b = collect_jpgs(dirb);
+
+    // Build a set of file names in dirb
+    let names_b: HashSet<_> = jpgs_b.iter()
+        .filter_map(|p| p.file_name().map(|n| n.to_owned()))
+        .collect();
+
+    // Find jpgs in dira not found in dirb (by file name)
+    let mut not_in_b = Vec::new();
+    for path in &jpgs_a {
+        if let Some(name) = path.file_name() {
+            if !names_b.contains(name) {
+                not_in_b.push(path);
             }
         }
+    }
+
+    println!("Images in {} not found in {}:", dira.display(), dirb.display());
+    for path in not_in_b {
+        println!("{}", path.display());
     }
 }
