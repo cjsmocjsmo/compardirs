@@ -43,7 +43,7 @@ fn main() {
     }
 
     println!("Images in {} not found in {}:", dira.display(), dirb.display());
-    for path in not_in_b {
-        println!("{}", path.display());
-    }
+    // for path in not_in_b {
+    //     println!("{}", path.display());
+    // }
 }
