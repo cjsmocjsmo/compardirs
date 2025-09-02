@@ -21,8 +21,8 @@ fn collect_jpgs(dir: &Path) -> Vec<PathBuf> {
 }
 
 fn main() {
-    let dira = Path::new("/media/whitepi/ATree/Clean"); // <-- set your path
-    let dirb = Path::new("/media/whitepi/ATree/RustMasterPics"); // <-- set your path
+    let dira = Path::new("/media/whitepi/ATree/RustMasterPics"); // <-- set your path
+    let dirb = Path::new("/media/whitepi/ATree/Clean"); // <-- set your path
 
     let jpgs_a = collect_jpgs(dira);
     let jpgs_b = collect_jpgs(dirb);
