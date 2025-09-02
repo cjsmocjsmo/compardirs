@@ -45,6 +45,10 @@ fn main() {
     println!("Images in {} not found in {}:", dira.display(), dirb.display());
     println!("Total images in dira {}: {}", dira.display(), jpgs_a.len());
     println!("Total images in dirb {}: {}", dirb.display(), jpgs_b.len());
+    let ja = jpgs_a.len();
+    let jb = jpgs_b.len();
+    let jc = ja - jb;
+    println!("Difference in counts (dira - dirb): {}", jc);
     // for path in &not_in_b {
     //     println!("{}", path.display());
     // }
